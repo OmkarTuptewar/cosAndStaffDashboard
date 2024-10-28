@@ -32,10 +32,10 @@ const Login = () => {
       const data = await response.json();
       
 
-      const { token } = data;
+      const {token} = data;
 
-      localStorage.setItem("authToken", token);
-      login(username, "admin");
+     
+      login(username,"admin",token);
 
       toast.success("Login successful!");
       navigate("/Home");
@@ -45,6 +45,9 @@ const Login = () => {
       toast.error("Invalid username or password");
     }
   };
+
+
+
 
   return (
     <>

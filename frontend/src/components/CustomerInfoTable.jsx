@@ -1,88 +1,62 @@
-
-import React from 'react';
-import { FiEye } from 'react-icons/fi'; 
-
-
-const customers = [
-    {
-        accountName: "Alice Johnson",
-        time: "9:30 AM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Premium Member",
-    },
-    {
-        accountName: "Bob Brown",
-        time: "10:15 AM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Regular Member",
-    },
-    {
-        accountName: "Charlie Green",
-        time: "11:45 AM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Gold Member",
-    },
-    {
-        accountName: "Diana Prince",
-        time: "12:00 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "VIP Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    {
-        accountName: "John Doe",
-        time: "1:30 PM",
-        imageUrl: "https://via.placeholder.com/150",
-        visaType: "Platinum Member",
-    },
-    
-];
+import React, { useContext, useEffect, useState } from 'react';
+import { FiEye } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { UserContext } from '../context/UserContext';
 
 const CustomerInfoTable = () => {
+
+    const { UserName } = useParams(); // Get the UserName parameter from the URL
+    const { userInfo } = useContext(UserContext); // Access userInfo from UserContext
+    const [customers, setCustomers] = useState([]); 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null); 
+
+    useEffect(() => {
+        const fetchCustomerData = async () => {
+            try {
+                const response = await axios.get(`http://development.knowmyslots.com:3000/api/v1/getcustomerinfo/${UserName}`, {
+                    headers: {
+                      
+                        Authorization: `Bearer ${userInfo.token}`,
+                    },
+                });
+
+                
+
+                if (response.data.success) {
+                    // Map the API response data to the format needed for your table
+                    const customerData = response.data.data.map((item) => ({
+                        accountName: item.username,
+                        time: item.indianTime,
+                        imageUrl: `${item.link}`, 
+                        visaType: item.visaType,
+                    }));
+
+                    setCustomers(customerData);
+                }
+            } catch (error) {
+                setError('Failed to fetch customer data.');
+                console.error('Error fetching customer data:', error);
+            } finally {
+                setLoading(false); 
+            }
+        };
+
+        fetchCustomerData(); 
+    }, [UserName,userInfo.token]);
+
+    if (loading) {
+        return <div className="text-center">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="text-red-500 text-center">{error}</div>; 
+    }
+
     return (
-        <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200  rounded-lg shadow-lg overflow-y-auto">
-            <h1 className="text-2xl font-bold mb-4 text-center">Customer Info</h1>
+        <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-lg overflow-y-auto">
+            <h1 className="text-2xl font-bold mb-4 text-center">Customer Info for - {UserName}</h1>
             <table className="min-w-full bg-white border border-gray-400 rounded-lg shadow-md">
                 <thead>
                     <tr className="bg-purple-600 text-white">

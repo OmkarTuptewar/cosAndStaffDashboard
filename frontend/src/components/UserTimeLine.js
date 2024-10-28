@@ -1,44 +1,48 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import displayimage from "../assets/images/post-image-1.png";
+import axios from "axios";
 import SideBarCos from "./SideBarCos";
-
-const timelineData = [
-  {
-    id: 1,
-    image: displayimage,
-    date: 'January 1, 2024',
-    description: 'New Year Celebration with fireworks and joy.',
-  },
-  {
-    id: 2,
-    image: displayimage,
-    date: 'February 14, 2024',
-    description: 'Valentine\'s Day celebration filled with love and friendship.',
-  },
-  {
-    id: 3,
-    image: displayimage,
-    date: 'March 17, 2024',
-    description: 'St. Patrick\'s Day festivities with green beer and parades.',
-  },
-  {
-    id: 4,
-    image: displayimage,
-    date: 'April 22, 2024',
-    description: 'Celebrating Earth Day with nature walks and cleanups.',
-  },
-  {
-    id: 5,
-    image: displayimage,
-    date: 'May 1, 2024',
-    description: 'Spring Festival showcasing flowers and vibrant colors.',
-  },
-  
-];
+import { UserContext } from "../context/UserContext"; // Adjust based on your structure
 
 const UserTimeLine = () => {
   const { UserName } = useParams();
+  const { userInfo } = useContext(UserContext);
+  const [timelineData, setTimelineData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTimelineData = async () => {
+      try {
+        const response = await axios.get("http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/jaish", {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.data.success) {
+          setTimelineData(response.data.data);
+        } else {
+          console.error("Failed to fetch timeline data");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userInfo?.token) {
+      fetchTimelineData();
+    } else {
+      console.error("User token is not available");
+      setLoading(false);
+    }
+  }, [userInfo]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex">
@@ -58,14 +62,16 @@ const UserTimeLine = () => {
 
             {timelineData.map((item, index) => (
               <div
-                key={item.id}
-                className={`flex items-center mb-10 transition-all duration-300 ease-in-out transform hover:scale-105 ${index % 2 === 0 ? 'flex-row-reverse' : ''}`}
+                key={index}
+                className={`flex items-center mb-10 transition-all duration-300 ease-in-out transform hover:scale-105 ${
+                  index % 2 === 0 ? "flex-row-reverse" : ""
+                }`}
               >
                 {/* Image Section */}
                 <div className="w-2/4 px-4 flex justify-center">
                   <img
-                    src={item.image}
-                    alt={item.description}
+                    src={`${item.link}`} // Adjust with correct image base URL
+                    alt={item.username}
                     className="w-48 h-48 object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-110 hover:w-60 hover:h-60 rounded-md"
                   />
                 </div>
@@ -73,8 +79,12 @@ const UserTimeLine = () => {
                 {/* Content Section */}
                 <div className="w-3/4 px-4">
                   <div className="bg-white p-4 rounded-2xl shadow-lg transform transition-transform duration-300 hover:shadow-xl">
-                    <h3 className="text-lg font-semibold text-purple-900 mb-1">{item.date}</h3>
-                    <p className="text-gray-700 text-sm leading-relaxed">{item.description}</p>
+                    <h3 className="text-lg font-semibold text-purple-900 mb-1">
+                      {item.indianTime}
+                    </h3>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      {item.username}
+                    </p>
                   </div>
                 </div>
               </div>

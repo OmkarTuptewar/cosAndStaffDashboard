@@ -38,12 +38,20 @@ function App() {
             path="/slot-details" 
             element={userInfo.isAuthenticated ? <SlotDetailsPage /> : <Navigate to="/" />} 
           />
-          <Route 
+             <Route 
             path="/staff" 
             element={userInfo.isAuthenticated ? <StaffDetailPage /> : <Navigate to="/" />} 
           />
           <Route 
-            path="/customer" 
+            path="/staff/:UserName" 
+            element={userInfo.isAuthenticated ? <StaffDetailPage /> : <Navigate to="/" />} 
+          />
+           <Route 
+            path="/customer"
+            element={userInfo.isAuthenticated ? <CustomerDetailPage /> : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/customer/:UserName" 
             element={userInfo.isAuthenticated ? <CustomerDetailPage /> : <Navigate to="/" />} 
           />
           <Route 

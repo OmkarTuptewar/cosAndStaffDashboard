@@ -1,28 +1,42 @@
-
-import React from 'react';
-
-const slotDetailsData = [
-  { staffName: "Omkar Tuptewar", customer: "Alice", time: "10:00 AM", location: "Office", monthYear: "October 2024", dates: "01, 02", count: 5 },
-  { staffName: "John Doe", customer: "Bob", time: "11:30 AM", location: "Home", monthYear: "October 2024", dates: "03", count: 3 },
-  { staffName: "Jane Smith", customer: "Charlie", time: "1:00 PM", location: "Office", monthYear: "October 2024", dates: "04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06,04, 05, 06", count: 7 },
-  { staffName: "Alice Johnson", customer: "Diana", time: "9:00 AM", location: "Café", monthYear: "October 2024", dates: "07", count: 2 },
-  { staffName: "Bob Brown", customer: "Eve", time: "2:30 PM", location: "Office", monthYear: "October 2024", dates: "08, 09", count: 4 },
-  { staffName: "Charlie Green", customer: "Frank", time: "12:15 PM", location: "Library", monthYear: "October 2024", dates: "10", count: 1 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-  { staffName: "Diana Prince", customer: "Grace", time: "3:45 PM", location: "Home", monthYear: "October 2024", dates: "11", count: 3 },
-];
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import { UserContext } from "../context/UserContext"; // Import UserContext
 
 const SlotDetailsPage = () => {
+  const { userInfo } = useContext(UserContext); // Access userInfo from UserContext
+  const [slotDetailsData, setSlotDetailsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSlotDetails = async () => {
+      if (!userInfo?.token) return; // Ensure token is available
+
+      try {
+        setLoading(true);
+
+        const headers = {
+          Authorization: `Bearer ${userInfo.token}`, // Use token from userInfo
+        };
+
+        const response = await axios.get('http://development.knowmyslots.com:3000/api/v1/getslotsinfo', { headers });
+        setSlotDetailsData(response.data.data); // Access data correctly
+      } catch (error) {
+        setError('Failed to fetch slot details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlotDetails();
+  }, [userInfo.token]); // Run effect when token changes
+
   return (
-    <div className="overflow-hidden  bg-gradient-to-r from-gray-100 to-gray-200  rounded-lg shadow-lg h-[590px] overflow-y-auto">
+    <div className="overflow-hidden  rounded-lg shadow-lg h-[590px] overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Slot Details</h1>
-      <table className="min-w-full bg-white border border-gray-400 rounded-lg shadow-md">
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      <table className="min-w-full  border border-gray-400 rounded-lg shadow-md">
         <thead>
           <tr className="bg-purple-600 text-white">
             <th className="py-4 px-6 border-b-2 border-gray-400 text-center text-lg font-bold">Staff Name</th>
@@ -38,14 +52,15 @@ const SlotDetailsPage = () => {
           {slotDetailsData.map((slot, index) => (
             <tr
               key={index}
-              className="transform transition-transform duration-200 ease-in-out hover:bg-purple-200  hover:shadow-lg"
+              style={{ backgroundColor: slot.color || 'white' }} // Set background color from API, default to white
+              className="transform transition-transform duration-200 ease-in-out hover:bg-purple-200 hover:shadow-lg"
             >
-              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.staffName}</td>
-              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.customer}</td>
-              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.time}</td>
+              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.staff}</td>
+              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.customerName}</td>
+              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.indianTime}</td>
               <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.location}</td>
-              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.monthYear}</td>
-              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.dates}</td>
+              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.slotDetailsText.split('\n')[0].split('\t')[0]}</td>
+              <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400 border-r">{slot.slotDetailsText}</td>
               <td className="py-4 px-6 text-center text-md font-semibold border-b border-gray-400">{slot.count}</td>
             </tr>
           ))}
@@ -53,6 +68,6 @@ const SlotDetailsPage = () => {
       </table>
     </div>
   );
-}
+};
 
 export default SlotDetailsPage;

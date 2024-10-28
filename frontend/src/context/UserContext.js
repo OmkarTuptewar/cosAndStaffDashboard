@@ -21,20 +21,24 @@ export const UserProvider = ({ children }) => {
   }, [userInfo]);
 
   // Function to update user information
-  const login = (username, role) => {
+  const login = (username, role,token) => {
     setUserInfo({
       username,
       role,
       isAuthenticated: true,
+      token:token,
     });
   };
 
+
+  
   // Function to log out the user and clear user information
   const logout = () => {
     setUserInfo({
       username: '',
       role: '',
       isAuthenticated: false,
+      token:null,
     });
     localStorage.removeItem('userInfo'); // Optionally clear user info from local storage on logout
   };
