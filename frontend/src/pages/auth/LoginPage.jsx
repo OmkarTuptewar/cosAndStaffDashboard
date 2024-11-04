@@ -11,10 +11,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true
 
     try {
       const response = await fetch("/api/v1/login", {
@@ -30,37 +32,31 @@ const Login = () => {
       }
 
       const data = await response.json();
-      
+      const { token } = data;
 
-      const {token} = data;
-
-     
-      login(username,"admin",token);
-
+      login(username, "admin", token);
       toast.success("Login successful!");
       navigate("/Home");
     } catch (err) {
       console.error(err);
       setError("Invalid username or password");
       toast.error("Invalid username or password");
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
-
-
-
   return (
     <>
-      <header className="bg-purple-600 shadow-lg text-white -m-6 ">
+    <div  className="h-screen">
+    <header className="bg-purple-600 text-white -m-6  ">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-2xl font-bold item-center">
-            KnowMySlots-DashBoard
-          </h1>
+          <h1 className="text-2xl font-bold item-center">KnowMySlots-DashBoard</h1>
         </div>
       </header>
 
-      <div className="flex flex-col bg-gray-100 m-28 ">
-        <ToastContainer /> {/* Toast notifications */}
+      <div className="flex flex-col mt-28 ">
+        <ToastContainer />
         <div className="flex-1 flex items-center justify-center px-4">
           <div className="bg-white shadow-2xl rounded-lg p-4 md:p-6 max-w-xs md:max-w-md w-full">
             <div className="flex justify-center items-center mb-4">
@@ -118,9 +114,7 @@ const Login = () => {
                     className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-500 cursor-pointer pt-6"
                     onClick={() => setShowPassword(!showPassword)}
                     role="button"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </div>
@@ -128,20 +122,26 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-1 px-2 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 transition duration-200 text-xs md:text-sm bg-purple-700 hover:bg-purple-900 focus:ring-indigo-400 text-white"
+                  disabled={loading} // Disable button while loading
+                  className={`w-full py-1 px-2 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 transition duration-200 text-xs md:text-sm ${
+                    loading ? "bg-gray-400" : "bg-purple-700 hover:bg-purple-900 focus:ring-indigo-400"
+                  } text-white`}
                 >
-                  Login as Admin
+                  {loading ? "Loading..." : "Login as Admin"}
                 </button>
               </form>
 
               <div className="mt-3 text-center text-gray-500 text-xs">
-                &copy; {new Date().getFullYear()} KnowMySlots. All rights
-                reserved.
+                &copy; {new Date().getFullYear()} KnowMySlots. All rights reserved.
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
+    </div>
+     
     </>
   );
 };

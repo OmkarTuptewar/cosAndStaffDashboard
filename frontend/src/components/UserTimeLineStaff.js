@@ -2,20 +2,22 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
-import { UserContext } from "../context/UserContext"; // Adjust import based on your file structure
-
+import { UserContext } from "../context/UserContext";
+import photo from "../assets/images/post-image-1.png"
 const UserTimeLineStaff = () => {
   const { UserName } = useParams();
-  const { userInfo } = useContext(UserContext); // Access userInfo from context
+  const { userInfo } = useContext(UserContext);
   const [timelineData, setTimelineData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
       try {
         const response = await axios.get(`http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/${UserName}`, {
           headers: {
-            'Authorization': `Bearer ${userInfo.token}`, // Pass token in Authorization header
+            'Authorization': `Bearer ${userInfo.token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -40,6 +42,16 @@ const UserTimeLineStaff = () => {
     }
   }, [userInfo]);
 
+  const openModal = (imageSrc) => {
+    setSelectedImage(imageSrc);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+    setModalOpen(false);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -47,7 +59,7 @@ const UserTimeLineStaff = () => {
   return (
     <div className="flex ">
       <Sidebar />
-      <div className="flex-1 ml-10 -m-5  ">
+      <div className="flex-1 ml-10 -m-5">
         <h1 className="font-bold text-3xl text-purple-600">
           Image Timeline for {UserName}
         </h1>
@@ -57,22 +69,20 @@ const UserTimeLineStaff = () => {
           </h2>
 
           <div className="relative w-full max-w-5xl">
-            {/* Vertical Line */}
             <div className="absolute left-1/2 h-full border-l-2 border-white transform -translate-x-1/2"></div>
 
             {timelineData.map((item, index) => (
               <div
                 key={item.link}
-                className={`flex items-center mb-10 transition-all duration-300 ease-in-out transform hover:scale-105 ${
-                  index % 2 === 0 ? "flex-row-reverse" : ""
-                }`}
+                className={`flex items-center mb-10 transition-all duration-300 ease-in-out transform hover:scale-105 ${index % 2 === 0 ? "flex-row-reverse" : ""}`}
               >
                 {/* Image Section */}
                 <div className="w-2/4 px-4 flex justify-center">
                   <img
-                    src={`${item.link}`} 
+                    src={`${item.link}`}
                     alt={item.username}
-                    className="w-48 h-48 object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-110 hover:w-60 hover:h-60 rounded-md"
+                    className="w-48 h-48 object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-110 hover:w-60 hover:h-60 rounded-md cursor-pointer"
+                    onClick={() => openModal(item.link)} // Open modal on image click
                   />
                 </div>
 
@@ -91,6 +101,28 @@ const UserTimeLineStaff = () => {
             ))}
           </div>
         </div>
+
+            {/* Modal */}
+      {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeModal}
+        >
+          <div className="bg-white p-4 rounded-lg shadow-lg max-w-2xl w-full">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={closeModal}
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Selected"
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

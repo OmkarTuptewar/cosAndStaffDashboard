@@ -9,16 +9,21 @@ const UserTimeLine = () => {
   const { userInfo } = useContext(UserContext);
   const [timelineData, setTimelineData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
       try {
-        const response = await axios.get(`http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/${UserName}`, {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(
+          `http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/${UserName}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (response.data.success) {
           setTimelineData(response.data.data);
@@ -38,20 +43,32 @@ const UserTimeLine = () => {
       console.error("User token is not available");
       setLoading(false);
     }
-  }, [userInfo]);
+  }, [userInfo, UserName]);
+
+  // Open modal and set selected image
+  const handleImageClick = (imageLink) => {
+    setSelectedImage(imageLink);
+    setIsModalOpen(true);
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="flex ">
+    <div className="flex">
       <SideBarCos />
       <div className="flex-1 ml-10 -m-5">
-        <h1 className="font-bold text-3xl text-purple-600 ">
+        <h1 className="font-bold text-3xl text-purple-600">
           Image Timeline for {UserName}
         </h1>
-        <div className="flex flex-col items-center bg-gradient-to-r from-purple-400 to-purple-600 overflow-y-auto shadow-xl h-[85vh] ">
+        <div className="flex flex-col items-center bg-gradient-to-r from-purple-400 to-purple-600 overflow-y-auto shadow-xl h-[85vh]">
           <h2 className="text-2xl font-bold text-white mb-8 drop-shadow-lg uppercase tracking-wider">
             Image Timeline
           </h2>
@@ -72,7 +89,8 @@ const UserTimeLine = () => {
                   <img
                     src={`${item.link}`} // Adjust with correct image base URL
                     alt={item.username}
-                    className="w-48 h-48 object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-110 hover:w-60 hover:h-60 rounded-md"
+                    className="w-48 h-48 object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-110 hover:w-60 hover:h-60 rounded-md cursor-pointer"
+                    onClick={() => handleImageClick(item.link)}
                   />
                 </div>
 
@@ -92,6 +110,28 @@ const UserTimeLine = () => {
           </div>
         </div>
       </div>
+
+       {/* Modal */}
+       {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeModal}
+        >
+          <div className="bg-white p-4 rounded-lg shadow-lg max-w-2xl w-full">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={closeModal}
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Selected"
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
