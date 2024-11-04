@@ -49,7 +49,7 @@ const StaffMemberInfoTable = () => {
     }
 
     return (
-        <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-lg overflow-y-auto ml-5">
+        <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-lg overflow-y-auto ml-5 h-[90vh] ">
             <h1 className="text-2xl font-bold mb-4 text-center">Staff Members Info - {UserName}</h1>
             <table className="min-w-full bg-white border border-gray-400 rounded-lg shadow-md">
                 <thead>

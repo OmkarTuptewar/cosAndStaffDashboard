@@ -47,7 +47,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="bg-white h-screen w-72 -m-6 text-black flex flex-col shadow-lg overflow-y-hidden h-[640px]">
+    <div className="bg-white w-72 -m-6  text-black flex flex-col shadow-lg overflow-y-auto h-[90vh] ">
       {/* Sidebar Header */}
       <div className="p-6 text-3xl font-extrabold text-center border-b border-gray-200">
         Staff Members

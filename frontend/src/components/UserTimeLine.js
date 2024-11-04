@@ -13,7 +13,7 @@ const UserTimeLine = () => {
   useEffect(() => {
     const fetchTimelineData = async () => {
       try {
-        const response = await axios.get("http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/jaish", {
+        const response = await axios.get(`http://development.knowmyslots.com:3000/api/v1/getstaffimageinfo/${UserName}`, {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
             "Content-Type": "application/json",
@@ -45,13 +45,13 @@ const UserTimeLine = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex ">
       <SideBarCos />
       <div className="flex-1 ml-10 -m-5">
         <h1 className="font-bold text-3xl text-purple-600 ">
           Image Timeline for {UserName}
         </h1>
-        <div className="flex flex-col items-center bg-gradient-to-r from-purple-400 to-purple-600 overflow-y-auto shadow-xl h-[600px] ">
+        <div className="flex flex-col items-center bg-gradient-to-r from-purple-400 to-purple-600 overflow-y-auto shadow-xl h-[85vh] ">
           <h2 className="text-2xl font-bold text-white mb-8 drop-shadow-lg uppercase tracking-wider">
             Image Timeline
           </h2>

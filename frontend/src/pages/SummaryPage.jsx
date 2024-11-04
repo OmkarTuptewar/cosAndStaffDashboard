@@ -38,7 +38,8 @@ const SummaryPage = () => {
   }, [userInfo.token]);
 
   return (
-    <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-lg h-[580px] overflow-y-auto">
+    <div className="overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-lg h-[75vh] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] overflow-y-auto">
+
       <h1 className="text-3xl font-bold mb-4 text-center">Staff And Customer Summary</h1>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}

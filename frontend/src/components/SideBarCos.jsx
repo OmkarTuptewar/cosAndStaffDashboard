@@ -47,7 +47,7 @@ const SideBarCos = () => {
 
 
   return (
-    <div className="bg-white h-screen w-72 -m-6 text-black flex flex-col shadow-lg overflow-y-hidden h-[640px]">
+    <div className="bg-white w-72 -m-6 text-black flex flex-col shadow-lg overflow-y-hidden h-[90vh]">
       {/* Sidebar Header */}
       <div className="p-6 text-3xl font-extrabold text-center border-b border-gray-200">
         Customers
@@ -72,7 +72,7 @@ const SideBarCos = () => {
                 onClick={() => handleImageTimeLineClick(customerName)}
                 className="text-gray-600 hover:text-gray-800 font-semibold transition duration-200 mr-4 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 w-full text-center"
               >
-                Image Time Line
+                Image Time Line 
               </button>
             </div>
           </li>

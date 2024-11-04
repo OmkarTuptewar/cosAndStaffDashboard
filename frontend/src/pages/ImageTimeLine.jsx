@@ -25,7 +25,8 @@ const ImageTimeline = () => {
   }, [userInfo.token]);
 
   return (
-    <div className="flex flex-col items-center py-8 bg-gradient-to-r from-purple-400 overflow-y-auto shadow-xl h-[590px]">
+    <div className="flex flex-col w-full items-center py-8 bg-gradient-to-r from-purple-300 to-purple-400 overflow-y-auto shadow-xl h-[87vh] sm:h-[70vh] md:h-[80vh] lg:h-[87vh]">
+
       <h2 className="text-2xl font-bold text-black mb-8 drop-shadow-lg uppercase tracking-wider">Image Timeline</h2>
 
       <div className="relative w-full max-w-5xl">

@@ -4,7 +4,7 @@ import CustomerInfoTable from '../components/CustomerInfoTable';
 
 const CustomerDetailPage = () => {
   return (
-    <div className="flex h-[600px]">
+    <div className="flex ">
       {/* Sidebar Component */}
       <SideBarCos  />
 

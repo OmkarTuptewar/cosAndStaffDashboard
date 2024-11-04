@@ -32,7 +32,7 @@ const SlotDetailsPage = () => {
   }, [userInfo.token]); // Run effect when token changes
 
   return (
-    <div className="overflow-hidden  rounded-lg shadow-lg h-[590px] overflow-y-auto">
+    <div className="overflow-hidden  rounded-lg shadow-lg h-[85vh] overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Slot Details</h1>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
